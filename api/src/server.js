@@ -6,6 +6,9 @@ const cors = require("cors");
 const colors = require("colors");
 const dotenv = require("dotenv").config();
 
+// Routers
+const ussdRouter = require('./routers/ussd');
+
 if (dotenv.error) {
   if (!process.env.DOCKER) {
     console.error(
@@ -38,6 +41,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.json({ message: "Hi there, welcome to the safepal USSD api!" });
 });
+// ussd Route
+app.use('/safepal/api/v2', ussdRouter);
 
 app.listen(
   PORT,
