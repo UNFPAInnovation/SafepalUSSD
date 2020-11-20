@@ -1,22 +1,24 @@
 {
-  "name": "safepal-ussd",
+  "name": "safepal-ussd-services",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Safepal USSD API Service config",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "docker-start-dev": "docker-compose -f docker-compose.yml up --build",
+    "docker-down-dev": "docker-compose -f docker-compose.yml -f docker-compose.yml down --rmi all",
+    "lint": "eslint ./api/src"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://mirriam-akongo@bitbucket.org/unfpa-consulting/safepal-ussd.git"
+  "devDependencies": {
+    "eslint": "^7.13.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11"
   },
-  "keywords": [],
-  "author": "mirriam akongo",
-  "license": "ISC",
-  "homepage": "https://bitbucket.org/unfpa-consulting/safepal-ussd#readme",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1"
-  }
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
+  "dependencies": {}
 }
