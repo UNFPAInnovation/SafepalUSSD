@@ -1,0 +1,30 @@
+{
+  "name": "safepal-ussd",
+  "version": "1.0.0",
+  "description": "Safepal USSD API",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server",
+    "api": "nodemon ./src/server --color",
+    "start:devserver": "npm run api"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://mirriam-akongo@bitbucket.org/unfpa-consulting/safepal-ussd.git"
+  },
+  "author": "Outbox Uganda",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/unfpa-consulting/safepal-ussd#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "helmet": "^4.1.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}

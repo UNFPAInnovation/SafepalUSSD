@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  api:
+      build:
+        context: ./api
+        dockerfile: Dockerfile
+      image: safepal-ussd-api
+      container_name: safepal-ussd-api
+      command: ['npm', 'run', 'start:devserver']
+      restart: always
+      volumes:
+        - './api:/app'
+      environment:
+        - DOCKER=true
+  nginx:
+    restart: always
+    depends_on:
+      - api
+    container_name: safepal-ussd-api-nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
