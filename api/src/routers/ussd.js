@@ -3,6 +3,6 @@ const router = require('express-promise-router')();
 const { ussd,sessionCheck } = require('../controllers/ussd');
 
 
-router.route('/').post(sessionCheck,ussd);
+router.route('/').post([sessionCheck,ussd]);
 
 module.exports = router;

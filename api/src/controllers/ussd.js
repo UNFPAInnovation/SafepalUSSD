@@ -1,21 +1,38 @@
-const {dataObject} = require('../db');
+const {dataArray} = require('../db');
 const menuOptions = require('./menus')
 
 
 module.exports = {
 	sessionCheck: (req,res,next)=>{
-		const {menu} = dataObject; 
-		// let sessionID = req.body.session_id;
 		const newSession = req.body.new;
-		if(newSession){
-			dataObject.menu = 0;
-			req.menu = menu;
-			console.log(`Added menu ...${menu}`);
+		// check whether the session is new or not
+		if(newSession === true){
+			const date = new Date();
+			// Capture the reporters Data
+			const userData = {
+				sessionID:req.body.session_id,
+				menu:0,
+				time:req.body.tstamp,
+				phoneNumber:req.body.phone_number,
+				report_source: 'SafePal-USSD',
+				reportDate: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+			}
+			// Add the data to the dataArray
+			dataArray.push(userData);
+			req.menu = 0;
+			console.log(`Added menu ...${dataArray} , ${newSession}`);
 			console.log('Gone to the next middleWare. . .')
 			next();
 		}else{
-			req.menu = menu;
-			console.log(`Added menu ...${menu}`);
+			// look for the User Id from the dataArray
+			for(let i=0;i<dataArray.length;i=i+1){
+				if(dataArray[i].sessionID === req.body.session_id){
+					req.menu = dataArray[i].menu;
+				}else{
+					console.log('could not find User\'s SessionID');
+				}
+			}
+			console.log(`Added menu ...${req.menu} , ${newSession}`);
 			console.log('Gone to the next middleWare. . .')
 			next();
 		}

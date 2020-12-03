@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Hi there, welcome to the safepal USSD api!" });
 });
 // ussd Route
-app.use('/safepal/api/v2', ussdRouter);
+app.use('/', ussdRouter);
 
 app.listen(
   PORT,
