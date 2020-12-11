@@ -1,10 +1,11 @@
-const express = require("express");
-const morgan = require("morgan");
-const helmet = require("helmet");
-const cors = require("cors");
+/* eslint-disable no-console */
+const express = require('express');
+const morgan = require('morgan');
+const helmet = require('helmet');
+const cors = require('cors');
 // eslint-disable-next-line no-unused-vars
-const colors = require("colors");
-const dotenv = require("dotenv").config();
+const colors = require('colors');
+const dotenv = require('dotenv').config();
 
 // Routers
 const ussdRouter = require('./routers/ussd');
@@ -27,7 +28,7 @@ const PORT = process.env.SERVER_PORT || 5000;
 // Initialize Application
 const app = express();
 
-app.use(morgan("common"));
+app.use(morgan('common'));
 app.use(helmet());
 app.use(
   cors({
@@ -38,11 +39,11 @@ app.use(
 app.use(express.json());
 
 // Routes
-app.get("/", (req, res) => {
-  res.json({ message: "Hi there, welcome to the safepal USSD api!" });
+app.get('/', (req, res) => {
+  res.json({ message: 'Hi there, welcome to the safepal USSD api!' });
 });
 // ussd Route
-app.use('/api/', ussdRouter);
+app.use('/', ussdRouter);
 
 app.listen(
   PORT,
