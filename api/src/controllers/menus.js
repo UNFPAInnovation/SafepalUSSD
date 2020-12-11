@@ -1,15 +1,11 @@
 /* eslint-disable no-console */
 /* eslint-disable camelcase */
 /* This Module contains the USSD menus */
-const fs = require('fs');
 const { dataArray, checkSessionId } = require('../db');
-
-// Reading the userReports from the report.json
-const data = fs.readFileSync('./src/reports.json');
-const reports = JSON.parse(data);
+const { sendReportToAPI, sendSMS } = require('../utils');
 
 const menuOptions = {
-  menuZero: (req, res) => {
+  menuZero: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '6') {
@@ -25,7 +21,7 @@ const menuOptions = {
         .json({ response_string: 'Something Went Wrong', action: 'end' });
     }
   },
-  menuOne: (req, res) => {
+  menuOne: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '1') {
@@ -39,7 +35,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuTwo: (req, res) => {
+  menuTwo: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '1') {
@@ -66,7 +62,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuThree: (req, res) => {
+  menuThree: async (req, res) => {
     const { request_string } = req.body;
 
     if (
@@ -107,7 +103,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuFour: (req, res) => {
+  menuFour: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '1' || request_string === '2') {
@@ -133,7 +129,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuFive: (req, res) => {
+  menuFive: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '1' || request_string === '2') {
@@ -159,7 +155,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuSix: (req, res) => {
+  menuSix: async (req, res) => {
     const { request_string } = req.body;
 
     if (
@@ -202,7 +198,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuSeven: (req, res) => {
+  menuSeven: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string.length > 0) {
@@ -223,9 +219,12 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuEight: (req, res) => {
-    const { request_string } = req.body;
-    if (request_string.length > 0) {
+  menuEight: async (req, res) => {
+    const { request_string, phoneNumber } = req.body;
+
+    try {
+      console.log(`${phoneNumber}`.green.underline);
+
       let userReport;
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
@@ -238,34 +237,58 @@ const menuOptions = {
         }
       }
 
-      // Saving the user report
-      reports.push({ userData: userReport });
-      fs.writeFileSync(
-        './src/reports.json',
-        JSON.stringify(reports, null, 2),
-        'utf8'
-      );
-      console.log(userReport);
+      //   1- Send the report to the safepal platform
+      const response = await sendReportToAPI(userReport);
+      const { status, casenumber } = response;
 
-      const safepalNum = Math.floor(Math.random() * 90000);
-      res.status(200).json({
-        response_string: `Your SafePal Number is: ${safepalNum}...SafePal will contact you soon`,
-        action: 'end',
-        userData: userReport,
-        reports,
-      });
+      if (status) {
+        res.status(200).json({
+          response_string: `Your SafePal Number is: ${casenumber}. SafePal will contact you soon`,
+          action: 'end',
+        });
 
-      // delete the UserData Object
-      for (let i = 0; i < dataArray.length; i += 1) {
-        if (dataArray[i].sessionID === req.body.session_id) {
-          dataArray.splice(i, 1);
+        // send an sms
+        const body = `We've received your report. Your Safepal number is ${casenumber}. Please keep this for record purposes. SafePal will contact you shortly.`;
+        const toPhoneNumber = `+${phoneNumber}`;
+        const failMsg = `An error occurred while sending SMS to ${phoneNumber}`;
+
+        const smsResult = await sendSMS({
+          body,
+          toPhoneNumber,
+          failMsg,
+        });
+
+        if (smsResult) {
+          // Silent pass. No need to do anything
         } else {
-          console.log("could not find User's SessionID");
+          // Just log the error for now but maybe figure out later how to deal with this.
+          console.log(`Error sending SMS message`.red.underline);
         }
+
+        // delete the UserData Object
+        for (let i = 0; i < dataArray.length; i += 1) {
+          if (dataArray[i].sessionID === req.body.session_id) {
+            dataArray.splice(i, 1);
+          } else {
+            console.log("could not find User's SessionID");
+          }
+        }
+      } else {
+        res.status(403).json({
+          response_string:
+            'We are sorry, something went wrong. Please try again',
+          action: 'end',
+        });
       }
-    } else {
+    } catch (error) {
+      console.log(error);
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
+
+    // if (request_string.length > 0) {
+
+    // } else {
+    // }
   },
 };
 

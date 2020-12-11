@@ -16,6 +16,12 @@ dist/
 # Log files
 *.log
 
+# Env files
+*.env
+
+# PEM files
+*.pem
+
 # Package files
 *.jar
 
