@@ -284,11 +284,6 @@ const menuOptions = {
       console.log(error);
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
-
-    // if (request_string.length > 0) {
-
-    // } else {
-    // }
   },
 };
 
