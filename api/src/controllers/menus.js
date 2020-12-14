@@ -220,11 +220,9 @@ const menuOptions = {
     }
   },
   menuEight: async (req, res) => {
-    const { request_string, phoneNumber } = req.body;
+    const { request_string } = req.body;
 
     try {
-      console.log(`${phoneNumber}`.green.underline);
-
       let userReport;
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
@@ -248,9 +246,10 @@ const menuOptions = {
         });
 
         // send an sms
+        console.log(userReport);
         const body = `We've received your report. Your Safepal number is ${casenumber}. Please keep this for record purposes. SafePal will contact you shortly.`;
-        const toPhoneNumber = `+${phoneNumber}`;
-        const failMsg = `An error occurred while sending SMS to ${phoneNumber}`;
+        const toPhoneNumber = `+${userReport.phoneNumber}`;
+        const failMsg = `An error occurred while sending SMS to ${userReport.phoneNumber}`;
 
         const smsResult = await sendSMS({
           body,
@@ -262,7 +261,7 @@ const menuOptions = {
           // Silent pass. No need to do anything
         } else {
           // Just log the error for now but maybe figure out later how to deal with this.
-          console.log(`Error sending SMS message`.red.underline);
+          console.log(`${failMsg}`.red.underline);
         }
 
         // delete the UserData Object
@@ -284,11 +283,6 @@ const menuOptions = {
       console.log(error);
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
-
-    // if (request_string.length > 0) {
-
-    // } else {
-    // }
   },
 };
 

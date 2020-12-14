@@ -20,8 +20,6 @@ module.exports = {
       // Add the data to the dataArray
       dataArray.push(userData);
       req.menu = 0;
-      console.log(`Added menu ...${dataArray} , ${newSession}`);
-      console.log('Gone to the next middleWare. . .');
       next();
     } else {
       // look for the User Id from the dataArray
@@ -32,8 +30,6 @@ module.exports = {
           console.log("could not find User's SessionID");
         }
       }
-      console.log(`Added menu ...${req.menu} , ${newSession}`);
-      console.log('Gone to the next middleWare. . .');
       next();
     }
   },
