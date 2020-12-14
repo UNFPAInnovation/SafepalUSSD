@@ -233,13 +233,13 @@ const menuOptions = {
               dataArray[i].region = 'Central';
               break;
             case '2':
-              dataArray[i].type = 'Eastern';
+              dataArray[i].region = 'Eastern';
               break;
             case '3':
-              dataArray[i].type = 'Western';
+              dataArray[i].region = 'Western';
               break;
             case '4':
-              dataArray[i].type = 'Northern';
+              dataArray[i].region = 'Northern';
               break;
             default:
           }
@@ -285,6 +285,8 @@ const menuOptions = {
   menuNine: async (req, res) => {
     const { request_string } = req.body;
 
+    console.log('Type of request string', typeof request_string);
+
     try {
       let userReport;
       for (let i = 0; i < dataArray.length; i += 1) {
@@ -296,6 +298,8 @@ const menuOptions = {
           console.log("could not find User's SessionID");
         }
       }
+
+      console.log(userReport);
 
       // Set location
       userReport.location = regions
