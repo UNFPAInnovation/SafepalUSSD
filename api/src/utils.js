@@ -4,6 +4,49 @@
 const axios = require('axios');
 const AfricasTalking = require('africastalking');
 
+const regions = [
+  {
+    region: 'Central',
+    districts: [
+      'Kampala',
+      'Wakiso',
+      'Masaka',
+      'Mukono',
+      'Kayunga',
+      'Mityana',
+      'Luwero',
+    ],
+  },
+
+  {
+    region: 'Western',
+    districts: [
+      'Mbarara',
+      'Kibaale',
+      'Kasese',
+      'Isingiro',
+      'Kabarole',
+      'Kamwenge',
+      'Ntungamo',
+    ],
+  },
+  {
+    region: 'Eastern',
+    districts: [
+      'Jinja',
+      'Mbale',
+      'Kamuli',
+      'Iganga',
+      'Bugiri',
+      'Tororo',
+      'Soroti',
+    ],
+  },
+  {
+    region: 'Northern',
+    districts: ['Arua', 'Lira', 'Gulu', 'Kitgum', 'Abim', 'Moroto', 'Adjumani'],
+  },
+];
 const config = (method, url, data) => {
   return {
     method: method === 'get' ? 'get' : 'post',
@@ -91,6 +134,7 @@ const sendSMS = async ({ body, toPhoneNumber, failMsg }) => {
 };
 
 module.exports = {
+  regions,
   getAPIToken,
   sendReportToAPI,
   sendSMS,

@@ -16,6 +16,7 @@ module.exports = {
         phoneNumber: req.body.phone_number,
         report_source: 'SafePal-USSD',
         reportDate: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+        contact: req.body.phone_number,
       };
       // Add the data to the dataArray
       dataArray.push(userData);
@@ -59,6 +60,12 @@ module.exports = {
         break;
       case 8:
         menuOptions.menuEight(req, res);
+        break;
+      case 9:
+        menuOptions.menuNine(req, res);
+        break;
+      case 10:
+        menuOptions.menuTen(req, res);
         break;
       default:
         menuOptions.menuZero(req, res);
