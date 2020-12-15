@@ -1,15 +1,11 @@
 /* eslint-disable no-console */
 /* eslint-disable camelcase */
 /* This Module contains the USSD menus */
-const fs = require('fs');
 const { dataArray, checkSessionId } = require('../db');
-
-// Reading the userReports from the report.json
-const data = fs.readFileSync('./src/reports.json');
-const reports = JSON.parse(data);
+const { sendReportToAPI, sendSMS, regions } = require('../utils');
 
 const menuOptions = {
-  menuZero: (req, res) => {
+  menuZero: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '6') {
@@ -25,7 +21,7 @@ const menuOptions = {
         .json({ response_string: 'Something Went Wrong', action: 'end' });
     }
   },
-  menuOne: (req, res) => {
+  menuOne: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '1') {
@@ -39,7 +35,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuTwo: (req, res) => {
+  menuTwo: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '1') {
@@ -66,7 +62,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuThree: (req, res) => {
+  menuThree: async (req, res) => {
     const { request_string } = req.body;
 
     if (
@@ -107,7 +103,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuFour: (req, res) => {
+  menuFour: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '1' || request_string === '2') {
@@ -133,7 +129,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuFive: (req, res) => {
+  menuFive: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string === '1' || request_string === '2') {
@@ -159,7 +155,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuSix: (req, res) => {
+  menuSix: async (req, res) => {
     const { request_string } = req.body;
 
     if (
@@ -171,22 +167,22 @@ const menuOptions = {
     ) {
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
-          // Capture the case details
+          // Capture the case type
           switch (request_string) {
             case '1':
-              dataArray[i].details = 'Bad Touches';
+              dataArray[i].type = 'Bad touches';
               break;
             case '2':
-              dataArray[i].details = 'I was Raped';
+              dataArray[i].type = 'I was raped';
               break;
             case '3':
-              dataArray[i].details = 'I was Defiled';
+              dataArray[i].type = 'I was defiled';
               break;
             case '4':
-              dataArray[i].details = 'Someone tried to raped me';
+              dataArray[i].type = 'Someone tried to raped me';
               break;
             case '5':
-              dataArray[i].details = 'Other';
+              dataArray[i].type = 'Other';
               break;
             default:
           }
@@ -202,7 +198,7 @@ const menuOptions = {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
-  menuSeven: (req, res) => {
+  menuSeven: async (req, res) => {
     const { request_string } = req.body;
 
     if (request_string.length > 0) {
@@ -216,20 +212,85 @@ const menuOptions = {
         }
       }
       res.status(200).json({
-        response_string: 'Enter Location where it happened',
+        response_string:
+          'Select your region. \n 1. Central \n 2. Eastern \n 3. Western \n 4. Northern \n 0. Back',
         action: 'request',
       });
     } else {
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
+
   menuEight: (req, res) => {
     const { request_string } = req.body;
-    if (request_string.length > 0) {
+
+    try {
+      for (let i = 0; i < dataArray.length; i += 1) {
+        if (dataArray[i].sessionID === req.body.session_id) {
+          // Capture the case type
+          switch (request_string) {
+            case '1':
+              dataArray[i].region = 'Central';
+              break;
+            case '2':
+              dataArray[i].region = 'Eastern';
+              break;
+            case '3':
+              dataArray[i].region = 'Western';
+              break;
+            case '4':
+              dataArray[i].region = 'Northern';
+              break;
+            default:
+          }
+          dataArray[i].menu = 9;
+        } else {
+          console.log("could not find User's SessionID");
+        }
+      }
+
+      if (request_string === '1') {
+        checkSessionId(9, req, dataArray);
+        res.status(200).json({
+          response_string:
+            'Select your District \n 1. Kampala \n 2. Wakiso \n 3. Masaka \n 4. Mukono \n 5. Kayunga \n 6. Mityana \n 7. Luwero \n 8. Others',
+          action: 'request',
+        });
+      } else if (request_string === '2') {
+        checkSessionId(9, req, dataArray);
+        res.status(200).json({
+          response_string:
+            'Select your District \n 1. Jinja \n 2. Mbale \n 3. Kamuli \n 4. Iganga \n 5. Bugiri \n 6. Tororo \n 7. Soroti \n 8. Others',
+          action: 'request',
+        });
+      } else if (request_string === '3') {
+        checkSessionId(9, req, dataArray);
+        res.status(200).json({
+          response_string:
+            'Select your District \n 1. Mbarara \n 2. Kibaale \n 3. Kasese \n 4. Isingiro \n 5. Kabarole \n 6. Kamwenge \n 7. Ntungamo \n 8. Others',
+          action: 'request',
+        });
+      } else if (request_string === '4') {
+        checkSessionId(9, req, dataArray);
+        res.status(200).json({
+          response_string:
+            'Select your District \n 1. Arua \n 2. Lira \n 3. Gulu \n 4. Kitgum \n 5. Abim \n 6. Moroto \n 7. Adjumani \n 8. Others',
+          action: 'request',
+        });
+      }
+    } catch (error) {
+      res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
+    }
+  },
+  menuNine: async (req, res) => {
+    const { request_string } = req.body;
+
+    console.log('Type of request string', typeof request_string);
+
+    try {
       let userReport;
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
-          dataArray[i].location = request_string;
           // delete the menu property
           delete dataArray[i].menu;
           userReport = dataArray[i];
@@ -238,32 +299,59 @@ const menuOptions = {
         }
       }
 
-      // Saving the user report
-      reports.push({ userData: userReport });
-      fs.writeFileSync(
-        './src/reports.json',
-        JSON.stringify(reports, null, 2),
-        'utf8'
-      );
       console.log(userReport);
 
-      const safepalNum = Math.floor(Math.random() * 90000);
-      res.status(200).json({
-        response_string: `Your SafePal Number is: ${safepalNum}...SafePal will contact you soon`,
-        action: 'end',
-        userData: userReport,
-        reports,
-      });
+      // Set location
+      userReport.location = regions
+        .filter((r) => r.region === userReport.region)
+        // Subtract 1 coz array is 0 indexed
+        .map((d) => d.districts)[0][request_string - 1];
 
-      // delete the UserData Object
-      for (let i = 0; i < dataArray.length; i += 1) {
-        if (dataArray[i].sessionID === req.body.session_id) {
-          dataArray.splice(i, 1);
+      //   1- Send the report to the safepal platform
+      const response = await sendReportToAPI(userReport);
+      const { status, casenumber } = response;
+
+      if (status) {
+        res.status(200).json({
+          response_string: `Your SafePal Number is: ${casenumber}. SafePal will contact you soon`,
+          action: 'end',
+        });
+
+        // send an sms
+        const body = `We've received your report. Your Safepal number is ${casenumber}. Please keep this for record purposes. SafePal will contact you shortly.`;
+        const toPhoneNumber = `+${userReport.phoneNumber}`;
+        const failMsg = `An error occurred while sending SMS to ${userReport.phoneNumber}`;
+
+        const smsResult = await sendSMS({
+          body,
+          toPhoneNumber,
+          failMsg,
+        });
+
+        if (smsResult) {
+          // Silent pass. No need to do anything
         } else {
-          console.log("could not find User's SessionID");
+          // Just log the error for now but maybe figure out later how to deal with this.
+          console.log(`${failMsg}`.red.underline);
         }
+
+        // delete the UserData Object
+        for (let i = 0; i < dataArray.length; i += 1) {
+          if (dataArray[i].sessionID === req.body.session_id) {
+            dataArray.splice(i, 1);
+          } else {
+            console.log("could not find User's SessionID");
+          }
+        }
+      } else {
+        res.status(403).json({
+          response_string:
+            'We are sorry, something went wrong. Please try again',
+          action: 'end',
+        });
       }
-    } else {
+    } catch (error) {
+      console.log(error);
       res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },

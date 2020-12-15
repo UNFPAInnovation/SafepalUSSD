@@ -16,12 +16,11 @@ module.exports = {
         phoneNumber: req.body.phone_number,
         report_source: 'SafePal-USSD',
         reportDate: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+        contact: req.body.phone_number,
       };
       // Add the data to the dataArray
       dataArray.push(userData);
       req.menu = 0;
-      console.log(`Added menu ...${dataArray} , ${newSession}`);
-      console.log('Gone to the next middleWare. . .');
       next();
     } else {
       // look for the User Id from the dataArray
@@ -32,8 +31,6 @@ module.exports = {
           console.log("could not find User's SessionID");
         }
       }
-      console.log(`Added menu ...${req.menu} , ${newSession}`);
-      console.log('Gone to the next middleWare. . .');
       next();
     }
   },
@@ -63,6 +60,12 @@ module.exports = {
         break;
       case 8:
         menuOptions.menuEight(req, res);
+        break;
+      case 9:
+        menuOptions.menuNine(req, res);
+        break;
+      case 10:
+        menuOptions.menuTen(req, res);
         break;
       default:
         menuOptions.menuZero(req, res);
