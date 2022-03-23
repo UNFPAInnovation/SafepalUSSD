@@ -1,0 +1,24 @@
+{
+  "name": "safepal-ussd-services",
+  "version": "1.0.0",
+  "description": "Safepal USSD API Service config",
+  "scripts": {
+    "docker-start-dev": "docker-compose -f docker-compose.yml up --build",
+    "docker-down-dev": "docker-compose -f docker-compose.yml -f docker-compose.yml down --rmi all",
+    "lint": "eslint ./api/src"
+  },
+  "devDependencies": {
+    "eslint": "^7.13.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
+  "dependencies": {}
+}
