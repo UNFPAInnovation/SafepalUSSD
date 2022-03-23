@@ -12,7 +12,7 @@ const menuOptions = {
       // checks for session_id and then assigns next menu
       checkSessionId(1, req, dataArray);
       res.status(200).json({
-        response_string: `We are here for you, talk to us about sexual violence \n 1. Report an incidence`,
+        response_string: `We are here for you, talk to us about sexual violence \n 1. Report an incident`,
         action: 'request',
       });
     } else {
