@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-const { dataArray } = require('../db');
-const menuOptions = require('./menus');
+const { dataArray } = require("../db");
+const menuOptions = require("./menus");
 
 module.exports = {
   sessionCheck: (req, res, next) => {
@@ -14,7 +14,7 @@ module.exports = {
         menu: 0,
         time: req.body.tstamp,
         phoneNumber: req.body.phone_number,
-        report_source: 'SafePal-USSD',
+        report_source: "SafePal-USSD",
         reportDate: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
         contact: req.body.phone_number,
       };
@@ -28,12 +28,13 @@ module.exports = {
         if (dataArray[i].sessionID === req.body.session_id) {
           req.menu = dataArray[i].menu;
         } else {
-          console.log("could not find User's SessionID");
+          console.log("Could not find User's SessionID");
         }
       }
       next();
     }
   },
+
   ussd: (req, res) => {
     const menuNum = req.menu;
     switch (menuNum) {
