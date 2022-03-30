@@ -132,23 +132,75 @@ const menuOptions = {
   menuFive: async (req, res) => {
     const { request_string } = req.body;
 
-    if (request_string === '1' || request_string === '2') {
+    if (request_string === '1') {
+      // checks for session_id and then assigns next menu
+      checkSessionId(6, req, dataArray);
+      res.status(200).json({
+        response_string:
+          'What happened to you? \n 1. Bad Touches \n 2. I was Raped \n 3. I was Defiled \n 4. Someone tried to raped me \n 5. Child Exploitation \n 6. Child Neglect \n 7. Child Trafficking \n 8. Emotional Abuse \n 9. Physical Abuse \n 10. Sexual Abuse \n 11. Murder \n 12. Online Child Sexual Abuse & Exploitation (OCSAE) \n 13. Other',
+        action: 'request',
+      });
+    } else if (request_string === '2') {
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
-          // capture disability
-          if (request_string === '1') {
-            dataArray[i].disability = 'No';
-          } else {
-            dataArray[i].disability = 'Yes';
+          dataArray[i].menu = 5.1;
+        } else {
+          console.log("could not find User's SessionID");
+        }
+      }
+      res.status(200).json({
+        response_string: "Specify the type of disability.  \n 1. Hearing \n 2. Visual \n 3. Physical \n 4. Motor \n 5. Mental \n 6. Intellectual",
+        action: 'request',
+      });
+    } else {
+      res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
+    }
+  },
+  menuFiveOne: async (req, res) => {
+    const { request_string } = req.body;
+
+    if (
+      request_string === '1' ||
+      request_string === '2' ||
+      request_string === '3' ||
+      request_string === '4' ||
+      request_string === '5' ||
+      request_string === '6'
+    ) {
+      for (let i = 0; i < dataArray.length; i += 1) {
+        if (dataArray[i].sessionID === req.body.session_id) {
+          // Capture the reporter_relationship
+          switch (request_string) {
+            case '1':
+              dataArray[i].reporter_relationship = 'Hearing';
+              break;
+            case '2':
+              dataArray[i].reporter_relationship = 'Visual';
+              break;
+            case '3':
+              dataArray[i].reporter_relationship = 'Physical';
+              break;
+            case '4':
+              dataArray[i].reporter_relationship = 'Motor';
+              break;
+            case '5':
+              dataArray[i].reporter_relationship = 'Mental';
+              break;
+            case '6':
+              dataArray[i].reporter_relationship = 'Intellectual';
+              break;
+
+            default:
           }
           dataArray[i].menu = 6;
         } else {
           console.log("could not find User's SessionID");
         }
       }
+
       res.status(200).json({
         response_string:
-          'What happened to you? \n 1. Bad Touches \n 2. I was Raped \n 3. I was Defiled \n 4. Someone tried to raped me \n 5. Other',
+          'What happened to you? \n 1. Bad Touches \n 2. I was Raped \n 3. I was Defiled \n 4. Someone tried to raped me \n 5. Child Exploitation \n 6. Child Neglect \n 7. Child Trafficking \n 8. Emotional Abuse \n 9. Physical Abuse \n 10. Sexual Abuse \n 11. Murder \n 12. Online Child Sexual Abuse & Exploitation (OCSAE) \n 13. Other',
         action: 'request',
       });
     } else {
@@ -182,9 +234,34 @@ const menuOptions = {
               dataArray[i].type = 'Someone tried to raped me';
               break;
             case '5':
+              dataArray[i].type = 'Child Exploitation';
+              break;
+            case '6':
+              dataArray[i].type = 'Child Neglect';
+              break;
+            case '7':
+              dataArray[i].type = 'Child Trafficking';
+              break;
+            case '8':
+              dataArray[i].type = 'Emotional Abuse';
+              break;
+            case '9':
+              dataArray[i].type = 'Physical Abuse';
+              break;
+            case '10':
+              dataArray[i].type = 'Sexual Abuse';
+              break;
+            case '11':
+              dataArray[i].type = 'Murder';
+              break;
+            case '12':
+              dataArray[i].type = 'Online Child Sexual Abuse & Exploitation (OCSAE)';
+              break;
+            case '13':
               dataArray[i].type = 'Other';
               break;
             default:
+
           }
           dataArray[i].menu = 7;
         } else {

@@ -68,9 +68,13 @@ module.exports = {
       case 10:
         menuOptions.menuTen(req, res);
         break;
+      case 5.1:
+        menuOptions.menuFiveOne(req, res);
+        break;
       default:
         menuOptions.menuZero(req, res);
         break;
+        
     }
   },
 };
