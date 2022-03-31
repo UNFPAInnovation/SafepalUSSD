@@ -30,7 +30,7 @@ const menuOptions = {
       // checks for session_id and then assigns next menu
       checkSessionId(0.2, req, dataArray);
       res.status(200).json({
-        response_string: `Do you want to be contacted on ${phone_number}? \n 1. No \n 2. Yes `,
+        response_string: `Do you want to be contacted on ${phone_number}? \n 1. Yes \n 2. No `,
         action: "request",
       });
     } else {
@@ -39,7 +39,7 @@ const menuOptions = {
   },
 
   menuZeroTwo: async (req, res) => {
-    const { request_string, phone_number } = req.body;
+    const { request_string } = req.body;
     console.log("MenuTwo");
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
