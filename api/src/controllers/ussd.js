@@ -80,6 +80,13 @@ module.exports = {
       case 0.3:
         menuOptions.menuZeroThree(req, res);
         break;
+      case 8.1:
+        menuOptions.menuEightOne(req, res);
+        break;
+      case 8.2:
+        menuOptions.menuEightTwo(req, res);
+        break;
+
       default:
         menuOptions.menuZero(req, res);
         break;

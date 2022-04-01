@@ -393,35 +393,35 @@ const menuOptions = {
               break;
             default:
           }
-          dataArray[i].menu = 9;
+          dataArray[i].menu = 8.1;
         } else {
           console.log("could not find User's SessionID");
         }
       }
 
       if (request_string === "1") {
-        checkSessionId(9, req, dataArray);
+        checkSessionId(8.1, req, dataArray);
         res.status(200).json({
           response_string:
             "Select your District \n 1. Kampala \n 2. Wakiso \n 3. Masaka \n 4. Mukono \n 5. Kayunga \n 6. Mityana \n 7. Luwero \n 8. Others",
           action: "request",
         });
       } else if (request_string === "2") {
-        checkSessionId(9, req, dataArray);
+        checkSessionId(8.1, req, dataArray);
         res.status(200).json({
           response_string:
             "Select your District \n 1. Jinja \n 2. Mbale \n 3. Kamuli \n 4. Iganga \n 5. Bugiri \n 6. Tororo \n 7. Soroti \n 8. Others",
           action: "request",
         });
       } else if (request_string === "3") {
-        checkSessionId(9, req, dataArray);
+        checkSessionId(8.1, req, dataArray);
         res.status(200).json({
           response_string:
             "Select your District \n 1. Mbarara \n 2. Kibaale \n 3. Kasese \n 4. Isingiro \n 5. Kabarole \n 6. Kamwenge \n 7. Ntungamo \n 8. Others",
           action: "request",
         });
       } else if (request_string === "4") {
-        checkSessionId(9, req, dataArray);
+        checkSessionId(8.1, req, dataArray);
         res.status(200).json({
           response_string:
             "Select your District \n 1. Arua \n 2. Lira \n 3. Gulu \n 4. Kitgum \n 5. Abim \n 6. Moroto \n 7. Adjumani \n 8. Others",
@@ -429,6 +429,180 @@ const menuOptions = {
         });
       }
     } catch (error) {
+      res.status(403).json({ response_string: "Invalid Input", action: "end" });
+    }
+  },
+
+  menuEightOne: async (req, res) => {
+    const { request_string } = req.body;
+
+    console.log("Type of request string", typeof request_string);
+
+    for (let i = 0; i < dataArray.length; i += 1) {
+      if (dataArray[i].sessionID === req.body.session_id) {
+        // Capture the district
+
+        if (dataArray[i].region === "Central") {
+          switch (request_string) {
+            case "1":
+              dataArray[i].district = "Kampala";
+              break;
+            case "2":
+              dataArray[i].district = "Wakiso";
+              break;
+            case "3":
+              dataArray[i].district = "Masaka";
+              break;
+            case "4":
+              dataArray[i].district = "Mukono";
+              break;
+            case "5":
+              dataArray[i].district = "Kayunga";
+              break;
+            case "6":
+              dataArray[i].district = "Mityana";
+              break;
+            case "7":
+              dataArray[i].district = "Luwero";
+              break;
+            case "8":
+              dataArray[i].menu = 8.2;
+              break;
+            default:
+              dataArray[i].district = null;
+              break;
+          }
+        } else if (dataArray[i].region === "Eastern") {
+          switch (request_string) {
+            case "1":
+              dataArray[i].district = "Jinja";
+              break;
+            case "2":
+              dataArray[i].district = "Mbale";
+              break;
+            case "3":
+              dataArray[i].district = "Kamuli";
+              break;
+            case "4":
+              dataArray[i].district = "Iganga";
+              break;
+            case "5":
+              dataArray[i].district = "Bugiri";
+              break;
+            case "6":
+              dataArray[i].district = "Tororo";
+              break;
+            case "7":
+              dataArray[i].district = "Soroti";
+              break;
+            case "8":
+              dataArray[i].menu = 8.2;
+              break;
+            default:
+              dataArray[i].district = null;
+              break;
+          }
+        } else if (dataArray[i].region === "Western") {
+          switch (request_string) {
+            case "1":
+              dataArray[i].district = "Mbarara";
+              break;
+            case "2":
+              dataArray[i].district = "Kibaale";
+              break;
+            case "3":
+              dataArray[i].district = "Kasese";
+              break;
+            case "4":
+              dataArray[i].district = "Isingiro";
+              break;
+            case "5":
+              dataArray[i].district = "Kabarole";
+              break;
+            case "6":
+              dataArray[i].district = "Kamwenge";
+              break;
+            case "7":
+              dataArray[i].district = "Ntungamo";
+              break;
+            case "8":
+              dataArray[i].menu = 8.2;
+              break;
+            default:
+              dataArray[i].district = null;
+              break;
+          }
+        } else if (dataArray[i].region === "Northern") {
+          switch (request_string) {
+            case "1":
+              dataArray[i].district = "Arua";
+              break;
+            case "2":
+              dataArray[i].district = "Lira";
+              break;
+            case "3":
+              dataArray[i].district = "Gulu";
+              break;
+            case "4":
+              dataArray[i].district = "Kitgum";
+              break;
+            case "5":
+              dataArray[i].district = "Abim";
+              break;
+            case "6":
+              dataArray[i].district = "Moroto";
+              break;
+            case "7":
+              dataArray[i].district = "Adjumani";
+              break;
+            case "8":
+              dataArray[i].menu = 8.2;
+              break;
+            default:
+              dataArray[i].district = null;
+              break;
+          }
+        } else {
+          res
+            .status(403)
+            .json({ response_string: "Invalid Input", action: "end" });
+        }
+
+        // response
+        if (req.body.request_string === "8") {
+          res.status(200).json({
+            response_string: "Enter your District",
+            action: "request",
+          });
+        } else {
+          res
+            .status(200)
+            .json({ response_string: "Test response", action: "request" });
+          dataArray[i].menu = 9;
+        }
+      } else {
+        console.log("could not find User's SessionID");
+      }
+    }
+  },
+
+  menuEightTwo: async (req, res) => {
+    const { request_string } = req.body;
+    if (request_string.length !== 0) {
+      for (let i = 0; i < dataArray.length; i += 1) {
+        if (dataArray[i].sessionID === req.body.session_id) {
+          // capture phone  number
+          dataArray[i].district = request_string;
+          dataArray[i].menu = 9;
+        } else {
+          console.log("could not find User's SessionID");
+        }
+      }
+
+      res
+        .status(200)
+        .json({ response_string: "Enter Your District", action: "request" });
+    } else {
       res.status(403).json({ response_string: "Invalid Input", action: "end" });
     }
   },
@@ -441,125 +615,6 @@ const menuOptions = {
       let userReport;
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
-          // Capture the district
-
-          if (dataArray[i].region === "Central") {
-            switch (request_string) {
-              case "1":
-                dataArray[i].district = "Kampala";
-                break;
-              case "2":
-                dataArray[i].district = "Wakiso";
-                break;
-              case "3":
-                dataArray[i].district = "Masaka";
-                break;
-              case "4":
-                dataArray[i].district = "Mukono";
-                break;
-              case "5":
-                dataArray[i].district = "Kayunga";
-                break;
-              case "6":
-                dataArray[i].district = "Mityana";
-                break;
-              case "7":
-                dataArray[i].district = "Luwero";
-                break;
-              case "8":
-                dataArray[i].district = "Others";
-                break;
-              default:
-            }
-          } else if (dataArray[i].region === "Eastern") {
-            switch (request_string) {
-              case "1":
-                dataArray[i].district = "Jinja";
-                break;
-              case "2":
-                dataArray[i].district = "Mbale";
-                break;
-              case "3":
-                dataArray[i].district = "Kamuli";
-                break;
-              case "4":
-                dataArray[i].district = "Iganga";
-                break;
-              case "5":
-                dataArray[i].district = "Bugiri";
-                break;
-              case "6":
-                dataArray[i].district = "Tororo";
-                break;
-              case "7":
-                dataArray[i].district = "Soroti";
-                break;
-              case "8":
-                dataArray[i].district = "Others";
-                break;
-              default:
-            }
-          } else if (dataArray[i].region === "Western") {
-            switch (request_string) {
-              case "1":
-                dataArray[i].district = "Mbarara";
-                break;
-              case "2":
-                dataArray[i].district = "Kibaale";
-                break;
-              case "3":
-                dataArray[i].district = "Kasese";
-                break;
-              case "4":
-                dataArray[i].district = "Isingiro";
-                break;
-              case "5":
-                dataArray[i].district = "Kabarole";
-                break;
-              case "6":
-                dataArray[i].district = "Kamwenge";
-                break;
-              case "7":
-                dataArray[i].district = "Ntungamo";
-                break;
-              case "8":
-                dataArray[i].district = "Others";
-                break;
-              default:
-            }
-          } else if (dataArray[i].region === "Northern") {
-            switch (request_string) {
-              case "1":
-                dataArray[i].district = "Arua";
-                break;
-              case "2":
-                dataArray[i].district = "Lira";
-                break;
-              case "3":
-                dataArray[i].district = "Gulu";
-                break;
-              case "4":
-                dataArray[i].district = "Kitgum";
-                break;
-              case "5":
-                dataArray[i].district = "Abim";
-                break;
-              case "6":
-                dataArray[i].district = "Moroto";
-                break;
-              case "7":
-                dataArray[i].district = "Adjumani";
-                break;
-              case "8":
-                dataArray[i].district = "Others";
-                break;
-              default:
-            }
-          }
-
-          // Capture the others option
-          dataArray[i].alternative_district = request_string;
-
           // delete the menu property
           delete dataArray[i].menu;
           userReport = dataArray[i];
