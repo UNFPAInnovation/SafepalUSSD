@@ -30,7 +30,7 @@ const menuOptions = {
       // checks for session_id and then assigns next menu
       checkSessionId(0.2, req, dataArray);
       res.status(200).json({
-        response_string: `Do you want to be contacted on ${phone_number}? \n 1. No \n 2. Yes `,
+        response_string: `Do you want to be contacted on ${phone_number}? \n 1. Yes \n 2. No `,
         action: "request",
       });
     } else {
@@ -39,7 +39,7 @@ const menuOptions = {
   },
 
   menuZeroTwo: async (req, res) => {
-    const { request_string, phone_number } = req.body;
+    const { request_string } = req.body;
     console.log("MenuTwo");
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
@@ -67,12 +67,23 @@ const menuOptions = {
 
   menuZeroThree: async (req, res) => {
     const { request_string } = req.body;
-    const phone_pattern = "/^((d+)s{0,1}){0,1}(d+((-|s){0,1})d+){0,}$/g";
+    const phone_pattern =
+      /^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im;
     const isvalid = phone_pattern.test(request_string);
+
     if (isvalid) {
       // checks for session_id and then assigns next menu
       req.body.phone_number = request_string;
-      checkSessionId(2, req, dataArray);
+      for (let i = 0; i < dataArray.length; i += 1) {
+        if (dataArray[i].sessionID === req.body.session_id) {
+          // capture phone  number
+          dataArray[i].phoneNumber = request_string;
+          dataArray[i].menu = 2;
+        } else {
+          console.log("could not find User's SessionID");
+        }
+      }
+
       res.status(200).json({
         response_string: "Did the incident happen to you? \n 1. No \n 2. Yes ",
         action: "request",
