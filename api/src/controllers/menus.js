@@ -7,7 +7,6 @@ const { sendReportToAPI, sendSMS, regions } = require("../utils");
 const menuOptions = {
   menuZero: async (req, res) => {
     const { request_string } = req.body;
-    console.log(request_string);
 
     if (request_string === "6") {
       // checks for session_id and then assigns next menu
@@ -25,7 +24,6 @@ const menuOptions = {
 
   menuZeroOne: async (req, res) => {
     const { request_string, phone_number } = req.body;
-    console.log("MenuTwo");
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
       checkSessionId(0.2, req, dataArray);
@@ -40,7 +38,6 @@ const menuOptions = {
 
   menuZeroTwo: async (req, res) => {
     const { request_string } = req.body;
-    console.log("MenuTwo");
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
       for (let i = 0; i < dataArray.length; i += 1) {
@@ -436,7 +433,6 @@ const menuOptions = {
   menuEightOne: async (req, res) => {
     const { request_string } = req.body;
 
-    console.log("Type of request string", typeof request_string);
 
     for (let i = 0; i < dataArray.length; i += 1) {
       if (dataArray[i].sessionID === req.body.session_id) {
@@ -623,7 +619,7 @@ const menuOptions = {
         }
       }
 
-      console.log(userReport);
+     
 
       // Set location
       userReport.location = regions
