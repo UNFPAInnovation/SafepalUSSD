@@ -441,6 +441,125 @@ const menuOptions = {
       let userReport;
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
+          // Capture the district
+
+          if (dataArray[i].region === "Central") {
+            switch (request_string) {
+              case "1":
+                dataArray[i].district = "Kampala";
+                break;
+              case "2":
+                dataArray[i].district = "Wakiso";
+                break;
+              case "3":
+                dataArray[i].district = "Masaka";
+                break;
+              case "4":
+                dataArray[i].district = "Mukono";
+                break;
+              case "5":
+                dataArray[i].district = "Kayunga";
+                break;
+              case "6":
+                dataArray[i].district = "Mityana";
+                break;
+              case "7":
+                dataArray[i].district = "Luwero";
+                break;
+              case "8":
+                dataArray[i].district = "Others";
+                break;
+              default:
+            }
+          } else if (dataArray[i].region === "Eastern") {
+            switch (request_string) {
+              case "1":
+                dataArray[i].district = "Jinja";
+                break;
+              case "2":
+                dataArray[i].district = "Mbale";
+                break;
+              case "3":
+                dataArray[i].district = "Kamuli";
+                break;
+              case "4":
+                dataArray[i].district = "Iganga";
+                break;
+              case "5":
+                dataArray[i].district = "Bugiri";
+                break;
+              case "6":
+                dataArray[i].district = "Tororo";
+                break;
+              case "7":
+                dataArray[i].district = "Soroti";
+                break;
+              case "8":
+                dataArray[i].district = "Others";
+                break;
+              default:
+            }
+          } else if (dataArray[i].region === "Western") {
+            switch (request_string) {
+              case "1":
+                dataArray[i].district = "Mbarara";
+                break;
+              case "2":
+                dataArray[i].district = "Kibaale";
+                break;
+              case "3":
+                dataArray[i].district = "Kasese";
+                break;
+              case "4":
+                dataArray[i].district = "Isingiro";
+                break;
+              case "5":
+                dataArray[i].district = "Kabarole";
+                break;
+              case "6":
+                dataArray[i].district = "Kamwenge";
+                break;
+              case "7":
+                dataArray[i].district = "Ntungamo";
+                break;
+              case "8":
+                dataArray[i].district = "Others";
+                break;
+              default:
+            }
+          } else if (dataArray[i].region === "Northern") {
+            switch (request_string) {
+              case "1":
+                dataArray[i].district = "Arua";
+                break;
+              case "2":
+                dataArray[i].district = "Lira";
+                break;
+              case "3":
+                dataArray[i].district = "Gulu";
+                break;
+              case "4":
+                dataArray[i].district = "Kitgum";
+                break;
+              case "5":
+                dataArray[i].district = "Abim";
+                break;
+              case "6":
+                dataArray[i].district = "Moroto";
+                break;
+              case "7":
+                dataArray[i].district = "Adjumani";
+                break;
+              case "8":
+                dataArray[i].district = "Others";
+                break;
+              default:
+            }
+          }
+
+          // Capture the others option
+          dataArray[i].alternative_district = request_string;
+
           // delete the menu property
           delete dataArray[i].menu;
           userReport = dataArray[i];
