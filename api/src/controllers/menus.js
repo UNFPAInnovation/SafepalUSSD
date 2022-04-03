@@ -74,7 +74,7 @@ const menuOptions = {
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
           // capture phone  number
-          dataArray[i].phoneNumber = request_string;
+          dataArray[i].contact = request_string;
           dataArray[i].menu = 2;
         } else {
           console.log("could not find User's SessionID");
@@ -242,22 +242,22 @@ const menuOptions = {
           // Capture the reporter_relationship
           switch (request_string) {
             case "1":
-              dataArray[i].reporter_relationship = "Hearing";
+              dataArray[i].disability_type = "Hearing";
               break;
             case "2":
-              dataArray[i].reporter_relationship = "Visual";
+              dataArray[i].disability_type = "Visual";
               break;
             case "3":
-              dataArray[i].reporter_relationship = "Physical";
+              dataArray[i].disability_type = "Physical";
               break;
             case "4":
-              dataArray[i].reporter_relationship = "Motor";
+              dataArray[i].disability_type = "Motor";
               break;
             case "5":
-              dataArray[i].reporter_relationship = "Mental";
+              dataArray[i].disability_type = "Mental";
               break;
             case "6":
-              dataArray[i].reporter_relationship = "Intellectual";
+              dataArray[i].disability_type = "Intellectual";
               break;
 
             default:
@@ -285,51 +285,59 @@ const menuOptions = {
       request_string === "2" ||
       request_string === "3" ||
       request_string === "4" ||
-      request_string === "5"
+      request_string === "5" ||
+      request_string === "6" ||
+      request_string === "7" ||
+      request_string === "8" ||
+      request_string === "9" ||
+      request_string === "10" ||
+      request_string === "11" ||
+      request_string === "12" ||
+      request_string === "13"
     ) {
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
           // Capture the case type
           switch (request_string) {
             case "1":
-              dataArray[i].type = "Bad touches";
+              dataArray[i].case_type = "Bad touches";
               break;
             case "2":
-              dataArray[i].type = "I was raped";
+              dataArray[i].case_type = "I was raped";
               break;
             case "3":
-              dataArray[i].type = "I was defiled";
+              dataArray[i].case_type = "I was defiled";
               break;
             case "4":
-              dataArray[i].type = "Someone tried to raped me";
+              dataArray[i].case_type = "Someone tried to raped me";
               break;
             case "5":
-              dataArray[i].type = "Child Exploitation";
+              dataArray[i].case_type = "Child Exploitation";
               break;
             case "6":
-              dataArray[i].type = "Child Neglect";
+              dataArray[i].case_type = "Child Neglect";
               break;
             case "7":
-              dataArray[i].type = "Child Trafficking";
+              dataArray[i].case_type = "Child Trafficking";
               break;
             case "8":
-              dataArray[i].type = "Emotional Abuse";
+              dataArray[i].case_type = "Emotional Abuse";
               break;
             case "9":
-              dataArray[i].type = "Physical Abuse";
+              dataArray[i].case_type = "Physical Abuse";
               break;
             case "10":
-              dataArray[i].type = "Sexual Abuse";
+              dataArray[i].case_type = "Sexual Abuse";
               break;
             case "11":
-              dataArray[i].type = "Murder";
+              dataArray[i].case_type = "Murder";
               break;
             case "12":
-              dataArray[i].type =
+              dataArray[i].case_type =
                 "Online Child Sexual Abuse & Exploitation (OCSAE)";
               break;
             case "13":
-              dataArray[i].type = "Other";
+              dataArray[i].case_type = "Other";
               break;
             default:
           }
@@ -573,7 +581,7 @@ const menuOptions = {
         } else {
           res
             .status(200)
-            .json({ response_string: "Test response", action: "request" });
+            .json({ response_string: "Confirm your submission \n 1. Yes", action: "request" });
           dataArray[i].menu = 9;
         }
       } else {
@@ -597,7 +605,7 @@ const menuOptions = {
 
       res
         .status(200)
-        .json({ response_string: "Enter Your District", action: "request" });
+        .json({ response_string: "Confirm your submission \n 1. Yes", action: "request" });
     } else {
       res.status(403).json({ response_string: "Invalid Input", action: "end" });
     }
@@ -619,6 +627,7 @@ const menuOptions = {
         }
       }
 
+      console.log(userReport);
      
 
       // Set location
