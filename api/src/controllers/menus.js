@@ -3,6 +3,10 @@
 /* This Module contains the USSD menus */
 const { dataArray, checkSessionId } = require("../db");
 const { sendReportToAPI, sendSMS, regions } = require("../utils");
+let salutation = "you"
+let salutation2 = "your"
+let gender = "her"
+let gender2 = "her"
 
 const menuOptions = {
   menuZero: async (req, res) => {
@@ -10,7 +14,7 @@ const menuOptions = {
 
     if (request_string === "6") {
       // checks for session_id and then assigns next menu
-      checkSessionId(0.1, req, dataArray);
+      checkSessionId(1, req, dataArray);
       res.status(200).json({
         response_string: `We are here for you, talk to us about sexual violence \n 1. Report an incident`,
         action: "request",
@@ -23,12 +27,12 @@ const menuOptions = {
   },
 
   menuZeroOne: async (req, res) => {
-    const { request_string, phone_number } = req.body;
+    const { request_string} = req.body;
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
       checkSessionId(0.2, req, dataArray);
       res.status(200).json({
-        response_string: `Do you want to be contacted on ${phone_number}? \n 1. Yes \n 2. No `,
+        response_string: `Would you want to add an alternative number? \n 1. No \n 2. Yes `,
         action: "request",
       });
     } else {
@@ -65,7 +69,7 @@ const menuOptions = {
   menuZeroThree: async (req, res) => {
     const { request_string } = req.body;
     const phone_pattern =
-      /^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im;
+    /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/im;
     const isvalid = phone_pattern.test(request_string);
 
     if (isvalid) {
@@ -75,14 +79,14 @@ const menuOptions = {
         if (dataArray[i].sessionID === req.body.session_id) {
           // capture phone  number
           dataArray[i].contact = request_string;
-          dataArray[i].menu = 2;
+          dataArray[i].menu = 9;
         } else {
           console.log("could not find User's SessionID");
         }
       }
-
+ 
       res.status(200).json({
-        response_string: "Did the incident happen to you? \n 1. No \n 2. Yes ",
+        response_string: "Comfirm your submission \n 1. Yes ",
         action: "request",
       });
     } else {
@@ -93,6 +97,8 @@ const menuOptions = {
   menuOne: async (req, res) => {
     const { request_string } = req.body;
     console.log("MenuTwo");
+    // var salutation = "you"
+    console.log(salutation);
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
       checkSessionId(2, req, dataArray);
@@ -101,21 +107,23 @@ const menuOptions = {
         action: "request",
       });
     } else {
-      res.status(403).json({ response_string: "Invalid Input", action: "end" });
+      res.status(403).json({ response_string: "Invalid Input \n 1. Report an incident ", action: "end" });
     }
   },
   menuTwo: async (req, res) => {
     const { request_string } = req.body;
-
+    salutation = request_string ==='1' ? 'him/her': "you"
+    salutation2 = request_string ==='1' ? 'his/her': "your"
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
       checkSessionId(3, req, dataArray);
       res.status(200).json({
         response_string:
-          "How are you related to him/her? \n 1. Relative \n 2. Friend \n 3. School Mate \n 4. Other",
+          `How are you related to ${salutation} \n 1. Relative \n 2. Friend \n 3. School Mate \n 4. Other`,
         action: "request",
       });
-    } else if (request_string === "2") {
+    } else if (request_string === "2") { 
+      // salutation = request_string ==='1' ? 'his/her': "your"
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
           dataArray[i].menu = 4;
@@ -124,11 +132,11 @@ const menuOptions = {
         }
       }
       res.status(200).json({
-        response_string: "What's your Gender? \n 1. Male \n 2. Female",
+        response_string: `What's ${salutation2} Gender? \n 1. Male \n 2. Female`,
         action: "request",
       });
     } else {
-      res.status(403).json({ response_string: "Invalid Input", action: "end" });
+      res.status(403).json({ response_string: "Invalid Input \n Did the incident happen to you? \n 1. No \n 2. Yes  ", action: "end" });
     }
   },
   menuThree: async (req, res) => {
@@ -158,7 +166,7 @@ const menuOptions = {
               break;
             default:
           }
-          dataArray[i].menu = 4;
+          dataArray[i].menu = 4.1;
         } else {
           console.log("could not find User's SessionID");
         }
@@ -169,12 +177,38 @@ const menuOptions = {
         action: "request",
       });
     } else {
-      res.status(403).json({ response_string: "Invalid Input", action: "end" });
+      res.status(403).json({ response_string: `Invalid Input \n How are you related to ${salutation} \n 1. Relative \n 2. Friend \n 3. School Mate \n 4. Other`, action: "end" });
     }
   },
   menuFour: async (req, res) => {
     const { request_string } = req.body;
-
+    if (request_string === "1" || request_string === "2") {
+      for (let i = 0; i < dataArray.length; i += 1) {
+        if (dataArray[i].sessionID === req.body.session_id) {
+          // capture Gender
+          if (request_string === "1") {
+            dataArray[i].gender = "Male";
+          } else {
+            dataArray[i].gender = "Female";
+          }
+          dataArray[i].menu = 5;
+        } else {
+          console.log("could not find User's SessionID");
+        }
+      }
+      res.status(200).json({
+        response_string:
+          "Do you have any disability? \n 1. No \n 2. Yes",
+        action: "request",
+      });
+    } else {
+      res.status(403).json({ response_string: "Invalid Input", action: "end" });
+    }
+  },
+  menuFourOne: async (req, res) => {
+    const { request_string } = req.body;
+    gender = request_string ==="1" ? "him" : "her"
+    gender2 = request_string ==="1" ? "his" : "her"
     if (request_string === "1" || request_string === "2") {
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
@@ -200,13 +234,14 @@ const menuOptions = {
   },
   menuFive: async (req, res) => {
     const { request_string } = req.body;
-
+    // salutation ? 'his/her': "you"
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
       checkSessionId(6, req, dataArray);
+      console.log(salutation, "other menu") 
       res.status(200).json({
         response_string:
-          "What happened to you? \n 1. Bad Touches \n 2. I was Raped \n 3. I was Defiled \n 4. Someone tried to raped me \n 5. Child Exploitation \n 6. Child Neglect \n 7. Child Trafficking \n 8. Emotional Abuse \n 9. Physical Abuse \n 10. Sexual Abuse \n 11. Murder \n 12. Online Child Sexual Abuse & Exploitation (OCSAE) \n 13. Other",
+          `What happened to ${gender}? \n 1. Bad Touches \n 2. I was Raped \n 3. I was Defiled \n 4. Someone tried to raped me \n 5. Child Exploitation \n 6. Child Neglect \n 7. Child Trafficking \n 8. Emotional Abuse \n 9. Physical Abuse \n 10. Sexual Abuse \n 11. Murder \n 12. Online Child Sexual Abuse & Exploitation (OCSAE) \n 13. Other`,
         action: "request",
       });
     } else if (request_string === "2") {
@@ -228,7 +263,7 @@ const menuOptions = {
   },
   menuFiveOne: async (req, res) => {
     const { request_string } = req.body;
-
+    // salutation ? 'his/her': "your"
     if (
       request_string === "1" ||
       request_string === "2" ||
@@ -270,7 +305,7 @@ const menuOptions = {
 
       res.status(200).json({
         response_string:
-          "What happened to you? \n 1. Bad Touches \n 2. I was Raped \n 3. I was Defiled \n 4. Someone tried to raped me \n 5. Child Exploitation \n 6. Child Neglect \n 7. Child Trafficking \n 8. Emotional Abuse \n 9. Physical Abuse \n 10. Sexual Abuse \n 11. Murder \n 12. Online Child Sexual Abuse & Exploitation (OCSAE) \n 13. Other",
+          `What happened to ${gender}? \n 1. Bad Touches \n 2. I was Raped \n 3. I was Defiled \n 4. Someone tried to raped me \n 5. Child Exploitation \n 6. Child Neglect \n 7. Child Trafficking \n 8. Emotional Abuse \n 9. Physical Abuse \n 10. Sexual Abuse \n 11. Murder \n 12. Online Child Sexual Abuse & Exploitation (OCSAE) \n 13. Other`,
         action: "request",
       });
     } else {
@@ -279,7 +314,7 @@ const menuOptions = {
   },
   menuSix: async (req, res) => {
     const { request_string } = req.body;
-
+    // salutation ? 'his/her': "your"
     if (
       request_string === "1" ||
       request_string === "2" ||
@@ -348,14 +383,14 @@ const menuOptions = {
       }
       res
         .status(200)
-        .json({ response_string: "Enter Your Age", action: "request" });
+        .json({ response_string: `Enter ${gender2} Age`, action: "request" });
     } else {
       res.status(403).json({ response_string: "Invalid Input", action: "end" });
     }
   },
   menuSeven: async (req, res) => {
     const { request_string } = req.body;
-
+    // salutation = request_string ==='1' ? 'his/her': "your"
     if (request_string.length > 0) {
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
@@ -368,7 +403,7 @@ const menuOptions = {
       }
       res.status(200).json({
         response_string:
-          "Select your region. \n 1. Central \n 2. Eastern \n 3. Western \n 4. Northern \n 0. Back",
+          `Select ${gender2} region. \n 1. Central \n 2. Eastern \n 3. Western \n 4. Northern \n 0. Back`,
         action: "request",
       });
     } else {
@@ -378,7 +413,7 @@ const menuOptions = {
 
   menuEight: (req, res) => {
     const { request_string } = req.body;
-
+    // salutation = request_string ==='1' ? 'his/her': "your"
     try {
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
@@ -408,28 +443,28 @@ const menuOptions = {
         checkSessionId(8.1, req, dataArray);
         res.status(200).json({
           response_string:
-            "Select your District \n 1. Kampala \n 2. Wakiso \n 3. Masaka \n 4. Mukono \n 5. Kayunga \n 6. Mityana \n 7. Luwero \n 8. Others",
+            `Select ${gender2} District \n 1. Kampala \n 2. Wakiso \n 3. Masaka \n 4. Mukono \n 5. Kayunga \n 6. Mityana \n 7. Luwero \n 8. Others`,
           action: "request",
         });
       } else if (request_string === "2") {
         checkSessionId(8.1, req, dataArray);
         res.status(200).json({
           response_string:
-            "Select your District \n 1. Jinja \n 2. Mbale \n 3. Kamuli \n 4. Iganga \n 5. Bugiri \n 6. Tororo \n 7. Soroti \n 8. Others",
+            `Select ${gender2} District \n 1. Jinja \n 2. Mbale \n 3. Kamuli \n 4. Iganga \n 5. Bugiri \n 6. Tororo \n 7. Soroti \n 8. Others`,
           action: "request",
         });
       } else if (request_string === "3") {
         checkSessionId(8.1, req, dataArray);
         res.status(200).json({
           response_string:
-            "Select your District \n 1. Mbarara \n 2. Kibaale \n 3. Kasese \n 4. Isingiro \n 5. Kabarole \n 6. Kamwenge \n 7. Ntungamo \n 8. Others",
+            `Select ${gender2} District \n 1. Mbarara \n 2. Kibaale \n 3. Kasese \n 4. Isingiro \n 5. Kabarole \n 6. Kamwenge \n 7. Ntungamo \n 8. Others`,
           action: "request",
         });
       } else if (request_string === "4") {
         checkSessionId(8.1, req, dataArray);
         res.status(200).json({
           response_string:
-            "Select your District \n 1. Arua \n 2. Lira \n 3. Gulu \n 4. Kitgum \n 5. Abim \n 6. Moroto \n 7. Adjumani \n 8. Others",
+            `Select ${gender2} District \n 1. Arua \n 2. Lira \n 3. Gulu \n 4. Kitgum \n 5. Abim \n 6. Moroto \n 7. Adjumani \n 8. Others`,
           action: "request",
         });
       }
@@ -441,7 +476,7 @@ const menuOptions = {
   menuEightOne: async (req, res) => {
     const { request_string } = req.body;
 
-
+    // salutation = request_string ==='1' ? 'his/her': "your"
     for (let i = 0; i < dataArray.length; i += 1) {
       if (dataArray[i].sessionID === req.body.session_id) {
         // Capture the district
@@ -566,6 +601,7 @@ const menuOptions = {
               dataArray[i].district = null;
               break;
           }
+        
         } else {
           res
             .status(403)
@@ -580,9 +616,9 @@ const menuOptions = {
           });
         } else {
           res
-            .status(200)
-            .json({ response_string: "Confirm your submission \n 1. Yes", action: "request" });
-          dataArray[i].menu = 9;
+          .status(200)
+          .json({ response_string: "Enter alternative phone number", action: "request" });
+        dataArray[i].menu = 0.3;
         }
       } else {
         console.log("could not find User's SessionID");
@@ -595,9 +631,9 @@ const menuOptions = {
     if (request_string.length !== 0) {
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
-          // capture phone  number
+          // capture district
           dataArray[i].district = request_string;
-          dataArray[i].menu = 9;
+          dataArray[i].menu = 0.3;
         } else {
           console.log("could not find User's SessionID");
         }
@@ -605,15 +641,16 @@ const menuOptions = {
 
       res
         .status(200)
-        .json({ response_string: "Confirm your submission \n 1. Yes", action: "request" });
+        .json({ response_string: "Enter alternative phone number", action: "request" });
     } else {
       res.status(403).json({ response_string: "Invalid Input", action: "end" });
     }
   },
-  menuNine: async (req, res) => {
+
+   menuNine: async (req, res) => {
     const { request_string } = req.body;
 
-    console.log("Type of request string", typeof request_string);
+    console.log('Type of request string', typeof request_string);
 
     try {
       let userReport;
@@ -628,7 +665,6 @@ const menuOptions = {
       }
 
       console.log(userReport);
-     
 
       // Set location
       userReport.location = regions
@@ -643,7 +679,7 @@ const menuOptions = {
       if (status) {
         res.status(200).json({
           response_string: `Your SafePal Number is: ${casenumber}. SafePal will contact you soon`,
-          action: "end",
+          action: 'end',
         });
 
         // send an sms
@@ -675,15 +711,14 @@ const menuOptions = {
       } else {
         res.status(403).json({
           response_string:
-            "We are sorry, something went wrong. Please try again",
-          action: "end",
+            'We are sorry, something went wrong. Please try again',
+          action: 'end',
         });
       }
     } catch (error) {
       console.log(error);
-      res.status(403).json({ response_string: "Invalid Input", action: "end" });
+      res.status(403).json({ response_string: 'Invalid Input', action: 'end' });
     }
   },
 };
-
 module.exports = menuOptions;

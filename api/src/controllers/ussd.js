@@ -86,7 +86,9 @@ module.exports = {
       case 8.2:
         menuOptions.menuEightTwo(req, res);
         break;
-
+        case 4.1:
+          menuOptions.menuFourOne(req, res);
+          break;
       default:
         menuOptions.menuZero(req, res);
         break;
