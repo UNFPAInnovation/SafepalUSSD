@@ -3,10 +3,12 @@
 /* This Module contains the USSD menus */
 const { dataArray, checkSessionId } = require("../db");
 const { sendReportToAPI, sendSMS, regions } = require("../utils");
+
 let salutation = "you"
 let salutation2 = "your"
-let gender = "her"
-let gender2 = "her"
+
+let gender = "you"
+let gender2 = "your"
 
 const menuOptions = {
   menuZero: async (req, res) => {
@@ -114,6 +116,7 @@ const menuOptions = {
     const { request_string } = req.body;
     salutation = request_string ==='1' ? 'him/her': "you"
     salutation2 = request_string ==='1' ? 'his/her': "your"
+    
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
       checkSessionId(3, req, dataArray);
@@ -235,14 +238,16 @@ const menuOptions = {
   menuFive: async (req, res) => {
     const { request_string } = req.body;
     // salutation ? 'his/her': "you"
+
     if (request_string === "1") {
       // checks for session_id and then assigns next menu
       checkSessionId(6, req, dataArray);
-      console.log(salutation, "other menu") 
+      console.log(gender) ;
+      
       res.status(200).json({
         response_string:
-          `What happened to ${gender}? \n 1. Bad Touches \n 2. I was Raped \n 3. I was Defiled \n 4. Someone tried to raped me \n 5. Child Exploitation \n 6. Child Neglect \n 7. Child Trafficking \n 8. Emotional Abuse \n 9. Physical Abuse \n 10. Sexual Abuse \n 11. Murder \n 12. Online Child Sexual Abuse & Exploitation (OCSAE) \n 13. Other`,
-        action: "request",
+          `What happened to ${gender}? \n 1. Child Exploitation \n 2. Child Neglect \n 3. Child Trafficking \n 4. Emotional Abuse \n 5. Physical Abuse \n 6. Sexual Abuse \n 7. Murder \n 8. Online Child Sexual Abuse & Exploitation (OCSAE) \n 9. Other`,
+          action: "request",
       });
     } else if (request_string === "2") {
       for (let i = 0; i < dataArray.length; i += 1) {
@@ -305,8 +310,8 @@ const menuOptions = {
 
       res.status(200).json({
         response_string:
-          `What happened to ${gender}? \n 1. Bad Touches \n 2. I was Raped \n 3. I was Defiled \n 4. Someone tried to raped me \n 5. Child Exploitation \n 6. Child Neglect \n 7. Child Trafficking \n 8. Emotional Abuse \n 9. Physical Abuse \n 10. Sexual Abuse \n 11. Murder \n 12. Online Child Sexual Abuse & Exploitation (OCSAE) \n 13. Other`,
-        action: "request",
+          `What happened to ${gender}? \n 1. Child Exploitation \n 2. Child Neglect \n 3. Child Trafficking \n 4. Emotional Abuse \n 5. Physical Abuse \n 6. Sexual Abuse \n 7. Murder \n 8. Online Child Sexual Abuse & Exploitation (OCSAE) \n 9. Other`,
+          action: "request",
       });
     } else {
       res.status(403).json({ response_string: "Invalid Input", action: "end" });
@@ -324,54 +329,38 @@ const menuOptions = {
       request_string === "6" ||
       request_string === "7" ||
       request_string === "8" ||
-      request_string === "9" ||
-      request_string === "10" ||
-      request_string === "11" ||
-      request_string === "12" ||
-      request_string === "13"
+      request_string === "9"
     ) {
       for (let i = 0; i < dataArray.length; i += 1) {
         if (dataArray[i].sessionID === req.body.session_id) {
           // Capture the case type
           switch (request_string) {
             case "1":
-              dataArray[i].case_type = "Bad touches";
-              break;
-            case "2":
-              dataArray[i].case_type = "I was raped";
-              break;
-            case "3":
-              dataArray[i].case_type = "I was defiled";
-              break;
-            case "4":
-              dataArray[i].case_type = "Someone tried to raped me";
-              break;
-            case "5":
               dataArray[i].case_type = "Child Exploitation";
               break;
-            case "6":
+            case "2":
               dataArray[i].case_type = "Child Neglect";
               break;
-            case "7":
+            case "3":
               dataArray[i].case_type = "Child Trafficking";
               break;
-            case "8":
+            case "4":
               dataArray[i].case_type = "Emotional Abuse";
               break;
-            case "9":
+            case "5":
               dataArray[i].case_type = "Physical Abuse";
               break;
-            case "10":
+            case "6":
               dataArray[i].case_type = "Sexual Abuse";
               break;
-            case "11":
+            case "7":
               dataArray[i].case_type = "Murder";
               break;
-            case "12":
+            case "8":
               dataArray[i].case_type =
                 "Online Child Sexual Abuse & Exploitation (OCSAE)";
               break;
-            case "13":
+            case "9":
               dataArray[i].case_type = "Other";
               break;
             default:
@@ -403,7 +392,7 @@ const menuOptions = {
       }
       res.status(200).json({
         response_string:
-          `Select ${gender2} region. \n 1. Central \n 2. Eastern \n 3. Western \n 4. Northern \n 0. Back`,
+          `Select ${gender2} region. \n 1. Central \n 2. Eastern \n 3. Western \n 4. Northern `,
         action: "request",
       });
     } else {
@@ -611,7 +600,7 @@ const menuOptions = {
         // response
         if (req.body.request_string === "8") {
           res.status(200).json({
-            response_string: "Enter your District",
+            response_string: "Enter District",
             action: "request",
           });
         } else {
